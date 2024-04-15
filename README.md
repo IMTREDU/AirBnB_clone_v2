@@ -2,6 +2,37 @@
 
 This repository contains the initial stage of a student project to build a clone of the AirBnB website. This stage implements a backend interface, or console, to manage program data. Console commands allow the user to create, update, and destroy objects, as well as manage file storage. Using a system of JSON serialization/deserialization, storage is persistent between sessions.
 
+### About Me
+
+- **Name**: [Islam Ahmed]
+- **Name 2**: [Wisam Taher]
+- **GitHub**: [imtr.edu@gmail.com]
+- **GitHub 2**: [wisam.radwan@gmail.com]
+
+### Contributions
+
+- [Ensured bug-free functionality by implementing comprehensive unit tests covering basic program functionality and verifying all tests pass without errors, meeting PEP8 standards consistently.
+
+Enhanced the console functionality to allow object creation with specified parameters, enabling users to create objects using the syntax create <Class name> <param 1> <param 2> <param 3>..., with parameters adhering to specific syntax rules for strings, floats, and integers. Additionally, comprehensive tests were added to validate this new feature, specifically tested with FileStorage engine.
+
+Developed MySQL setup scripts for both development and testing environments, ensuring the creation of databases, users, and necessary privileges. These scripts were designed to handle existing database and user scenarios gracefully.
+
+Implemented a new public instance method in FileStorage to delete objects, enhancing data management capabilities. This method allows for the deletion of specified objects from the storage, contributing to improved data integrity and management.
+
+Migrated from FileStorage to DBStorage using SQLAlchemy, providing improved storage management and abstraction. This transition involved significant updates to the BaseModel and related classes, including the addition of SQLAlchemy attributes and relationships. Additionally, DBStorage was implemented to handle database interactions, including object creation, deletion, and querying.
+
+Updated the User model to incorporate SQLAlchemy attributes and reflect changes necessary for DBStorage integration. This included defining table names and attributes, ensuring data integrity and compatibility with the new storage engine.
+
+Place Model Update:
+
+This section details the updates needed for the Place model. It includes adding or replacing class attributes like __tablename__, city_id, user_id, name, description, number_rooms, number_bathrooms, max_guest, price_by_night, latitude, and longitude. These attributes represent the table columns and their properties in the database. Additionally, the User model is updated to establish a relationship with the Place model, ensuring that when a User object is deleted, all linked Place objects are automatically deleted.
+Review Model Update:
+
+Similar to the Place model update, this section outlines the changes required for the Review model. It includes adding or replacing class attributes such as __tablename__, text, place_id, and user_id. These attributes define the table columns and their properties in the database. Additionally, the User and Place models are updated to establish relationships with the Review model, ensuring cascading deletion of linked objects.
+Amenity Model Update:
+
+This section focuses on updating the Amenity model. It includes adding or replacing class attributes like __tablename__ and name, which define the table columns and their properties in the database. Additionally, it establishes a many-to-many relationship between the Place and Amenity models using a third table called place_amenity, which contains foreign keys to the Place and Amenity tables. The Place model is updated to include this many-to-many relationship, and a script is provided to test this relationship.]
+
 ---
 
 <center><h3>Repository Contents by Project Task</h3> </center>
