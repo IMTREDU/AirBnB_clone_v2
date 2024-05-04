@@ -71,7 +71,7 @@ This section focuses on updating the Amenity model. It includes adding or replac
 
     * destroy - Destroys an object based on class and UUID
 
-    * show - Shows an object based on class and UUID
+    * show - Shows an object based on class and UUID.
 
     * all - Shows all objects the program has access to, or all objects of a given class
 
