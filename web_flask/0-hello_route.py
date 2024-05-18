@@ -1,16 +1,13 @@
 #!/usr/bin/python3
-"""
-Starts a Flask web application that displays "Hello HBNB!".
-"""
+
+""" Starts a Flask web application that displays "Hello HBNB!". """
 from flask import Flask
 
 app = Flask(__name__)
 
 @app.route('/', strict_slashes=False)
 def hello_hbnb():
-    """
-    Displays 'Hello HBNB!' at the root URL.
-    """
+    """Displays 'Hello HBNB!' at the root URL."""
     return "Hello HBNB!"
 
 if __name__ == "__main__":
