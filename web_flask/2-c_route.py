@@ -19,7 +19,7 @@ def hbnb():
 
 @app.route('/c/<text>', strict_slashes=False)
 def c_text(text):
-    """ Route for the /c/<text> URL that returns "C " followed by the value of the text variable.
+    """ Route for the /c/<text> URL that returns "C "
     Underscores in <text> are replaced with spaces. """
     return "C " + text.replace('_', ' ')
 
