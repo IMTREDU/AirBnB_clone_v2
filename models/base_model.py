@@ -1,71 +1,74 @@
 #!/usr/bin/python3
-"""Module defines a base class for all models in our hbnb clone"""
+"""Defines the base model class for AirBnB"""
+import uuid
 import models
-from uuid import uuid4
+import os
 from datetime import datetime
+from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, DateTime, String
+
 
 Base = declarative_base()
 
 
-class BaseModel(Base):
-    """Defines the BaseModel class.
+class BaseModel:
+    """Defines common attributes/methods for other classes"""
 
-    Attributes:
-        id (sqlalchemy String): The unique identifier for the BaseModel.
-        created_at (sqlalchemy DateTime): The timestamp of creation.
-        updated_at (sqlalchemy DateTime): The timestamp of the last update.
-    """
-
-    __tablename__ = 'base_model'
-
-    id = Column(String(60), primary_key=True, nullable=False)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    id = Column(String(60), nullable=False, primary_key=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
-        """Initializes a new BaseModel instance.
-
+        """Initialization of base model class
         Args:
-            *args (any): Unused.
-            **kwargs (dict): Key-value pairs of attributes.
+            args: unused
+            kwargs: arguments for the constructor of the BaseModel
+        Attributes:
+            id: unique id generated
+            created_at: creation date
+            updated_at: updated date
         """
-        super().__init__(*args, **kwargs)
-        self.id = str(uuid4())
-        self.created_at = self.updated_at = datetime.utcnow()
         if kwargs:
             for key, value in kwargs.items():
-                if key == "created_at" or key == "updated_at":
+                if key in ("created_at", "updated_at"):
                     value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
                 if key != "__class__":
                     setattr(self, key, value)
+            if "id" not in kwargs:
+                self.id = str(uuid.uuid4())
+            self.created_at = self.updated_at = datetime.now()
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = self.updated_at = datetime.now()
+
+    def __str__(self):
+        """Returns a string representation of the instance"""
+        return "[{}] ({}) {}".format(
+            type(self).__name__, self.id, self.__dict__)
+
+    def __repr__(self):
+        """Returns a string representation of the instance"""
+        return self.__str__()
 
     def save(self):
-        """Updates the updated_at attribute with the current datetime
-        and saves the instance to the storage.
-        """
-        self.updated_at = datetime.utcnow()
+        """Updates the public instance attribute updated_at to current time"""
+        self.updated_at = datetime.now()
         models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
-        """Returns a dictionary representation of the BaseModel instance,
-        including the class name (__class__) and timestamps in ISO format.
+        """Creates a dictionary representation of the instance
+        Return:
+            A dictionary of all key-value pairs in __dict__
         """
-        my_dict = self.__dict__.copy()
+        my_dict = dict(self.__dict__)
         my_dict["__class__"] = str(type(self).__name__)
         my_dict["created_at"] = self.created_at.isoformat()
         my_dict["updated_at"] = self.updated_at.isoformat()
-        my_dict.pop("_sa_instance_state", None)
+        if '_sa_instance_state' in my_dict:
+            del my_dict['_sa_instance_state']
         return my_dict
 
     def delete(self):
-        """Deletes the current instance from storage."""
+        """Deletes the current instance from storage"""
         models.storage.delete(self)
-
-    def __str__(self):
-        """Returns a string representation of the BaseModel instance."""
-        d = self.__dict__.copy()
-        d.pop("_sa_instance_state", None)
-        return "[{}] ({}) {}".format(type(self).__name__, self.id, d)

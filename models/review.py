@@ -1,23 +1,26 @@
 #!/usr/bin/python3
-"""Defines the Review class."""
-from models.base_model import Base
-from models.base_model import BaseModel
-from sqlalchemy import Column, ForeignKey, String
+"""Defines the Review class"""
+import os
+from models.base_model import BaseModel, Base, Column, String
 from sqlalchemy.orm import relationship
-
+from sqlalchemy import ForeignKey
 
 class Review(BaseModel, Base):
-    """Represents a review in a MySQL database.
-
-    Inherits from SQLAlchemy Base and corresponds to the MySQL table reviews.
-
+    """Represents a Review
     Attributes:
-        __tablename__ (str): The name of the MySQL table for storing reviews.
-        text (sqlalchemy String): The description of the review.
-        place_id (sqlalchemy String): The ID of the place being reviewed.
-        user_id (sqlalchemy String): The ID of the user who made the review.
+        place_id: id of the place
+        user_id: id of the user
+        text: description of the review
     """
-    __tablename__ = "reviews"
-    text = Column(String(1024), nullable=False)
-    place_id = Column(String(60), ForeignKey("places.id"), nullable=False)
-    user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
+    __tablename__ = 'reviews'
+
+    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        text = Column(String(1024), nullable=False)
+        place_id = Column(String(60), ForeignKey('places.id'), nullable=False)
+        user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+        user = relationship('User', back_populates='reviews')
+        place = relationship('Place', back_populates='reviews')
+    else:
+        text = ""
+        place_id = ""
+        user_id = ""

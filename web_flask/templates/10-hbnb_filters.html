@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HBNB - Filters</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-header.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-footer.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/4-common.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/6-filters.css') }}" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="HBNB logo" />
+      </div>
+    </header>
+    <div class="filters">
+      <div class="container">
+        <h3>States</h3>
+        <ul>
+          {% for state in states %}
+          <li>
+            <input type="checkbox" id="state_{{ state.id }}" />
+            <label for="state_{{ state.id }}">{{ state.name }}</label>
+            <ul>
+              {% for city in state.cities %}
+              <li>
+                <input type="checkbox" id="city_{{ city.id }}" />
+                <label for="city_{{ city.id }}">{{ city.name }}</label>
+              </li>
+              {% endfor %}
+            </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="container">
+        <h3>Amenities</h3>
+        <ul>
+          {% for amenity in amenities %}
+          <li>
+            <input type="checkbox" id="amenity_{{ amenity.id }}" />
+            <label for="amenity_{{ amenity.id }}">{{ amenity.name }}</label>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <footer>
+      <p>Holberton School</p>
+    </footer>
+  </body>
+</html>

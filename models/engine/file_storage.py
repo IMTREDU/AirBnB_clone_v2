@@ -1,70 +1,83 @@
 #!/usr/bin/python3
-"""Defines the FileStorage class."""
+"""This module defines the file storage class for AirBnB"""
 import json
+import sys
 from models.base_model import BaseModel
-from models.amenity import Amenity
+from models.user import User
+from models.state import State
 from models.city import City
+from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from models.state import State
-from models.user import User
 
 
 class FileStorage:
-    """Represents a storage engine abstraction.
-
+    """Handles serialization of instances to a JSON file and
+    deserialization of JSON file to instances
     Attributes:
-        __file_path (str): The file name to store objects.
-        __objects (dict): A dictionary of instantiated objects.
+        __file_path: path to the JSON file
+        __objects: stores all objects
     """
-
     __file_path = "file.json"
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of instantiated objects in __objects.
-
-        If cls is specified, returns a dictionary of objects of that type.
-        Otherwise, returns the __objects dictionary.
+        """Returns a dictionary
+        Return:
+            a dictionary of __objects
         """
-        if cls is not None:
-            if type(cls) == str:
-                cls = eval(cls)
-            cls_dict = {}
-            for k, v in self.__objects.items():
-                if type(v) == cls:
-                    cls_dict[k] = v
-            return cls_dict
-        return self.__objects
+        if cls is None:
+            return self.__objects
+        else:
+            new_dict = {}
+            if len(self.__objects) > 0:
+                for key, value in self.__objects.items():
+                    if type(cls) is str:
+                        if cls == key.split('.')[0]:
+                            new_dict[key] = value
+                    else:
+                        if cls is type(value):
+                            new_dict[key] = value
+            return new_dict
 
     def new(self, obj):
-        """Sets obj in __objects with key <obj_class_name>.id."""
-        self.__objects["{}.{}".format(type(obj).__name__, obj.id)] = obj
+        """Sets __objects to given obj
+        Args:
+            obj: the object to set
+        """
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            self.__objects[key] = obj
 
     def save(self):
-        """Serializes __objects to the JSON file __file_path."""
-        objects_dict = {o: self.__objects[o].to_dict() for o in self.__objects.keys()}
-        with open(self.__file_path, "w", encoding="utf-8") as f:
-            json.dump(objects_dict, f)
+        """Serializes __objects to the JSON file"""
+        my_dict = {}
+        for key, value in self.__objects.items():
+            my_dict[key] = value.to_dict()
+        with open(self.__file_path, 'w', encoding="UTF-8") as f:
+            json.dump(my_dict, f)
 
     def reload(self):
-        """Deserializes the JSON file __file_path to __objects, if it exists."""
+        """Deserializes the JSON file to __objects"""
         try:
-            with open(self.__file_path, "r", encoding="utf-8") as f:
-                for obj in json.load(f).values():
-                    class_name = obj["__class__"]
-                    del obj["__class__"]
-                    self.new(eval(class_name)(**obj))
+            with open(self.__file_path, 'r', encoding="UTF-8") as f:
+                for key, value in (json.load(f)).items():
+                    value = eval(value["__class__"])(**value)
+                    self.__objects[key] = value
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
-        """Deletes a given object from __objects, if it exists."""
-        try:
-            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
-        except (AttributeError, KeyError):
-            pass
+        """Deletes obj from __objects if present
+        Not sure if it should also delete from JSON file
+        """
+        dict_key = ""
+        for key, value in self.__objects.items():
+            if obj == value:
+                dict_key = key
+        if dict_key:
+            del self.__objects[dict_key]
 
     def close(self):
-        """Calls the reload method."""
+        """Calls reload() to deserialize the JSON file to objects"""
         self.reload()
